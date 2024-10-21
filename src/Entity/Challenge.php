@@ -25,6 +25,7 @@ class Challenge
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+    // 1 = todo, 2 = in progress, 3 = done
     #[ORM\Column(options: ['default' => 1])]
     private int $status = 1;
 
