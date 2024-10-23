@@ -45,7 +45,7 @@ class Challenge
     /**
      * @var Collection<int, Image>
      */
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'challenge')]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'challenge', cascade: ['persist', 'remove'])]
     private Collection $images;
 
     public function __construct()
