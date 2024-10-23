@@ -1,0 +1,16 @@
+{{ form_start(form) }}
+    {{ form_row(form.title) }}
+    <br>
+    {{ form_row(form.description) }}
+    <br>
+    {{ form_row(form.status) }}
+    <br>
+    {{ form_row(form.github) }}
+    <br>
+    {{ form_row(form.images) }}
+    <br>
+    {{ form_row(form.createdAt) }}
+    <br>
+
+    <button class="btn at_btn mb-5"> {{ button_label|default('Enregister') }}</button>
+{{ form_end(form) }}

@@ -3,16 +3,85 @@
 namespace App\Controller;
 
 use App\Entity\Challenge;
+use App\Entity\Image;
+use App\Form\ChallengeFormType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ChallengeController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $em)
     {
+    }
+
+    #[Route('/challenge/new', name: 'challenge_create', methods: ['GET', 'POST'])]
+    public function newChallenge(Request $request, UserRepository $userRepository): Response
+    {
+        // formulaire de création de challenge
+        $challenge = new Challenge();
+        $form = $this->createForm(ChallengeFormType::class, $challenge);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $users = $userRepository->findAll();
+
+            $images = $form->get('images')->getData();
+            $imageFiles = [];
+
+            // On boucle sur les images
+            foreach ($images as $image) {
+                // On génère un nouveau nom de fichier
+                $fichier = md5(uniqid()) . '.' . $image->guessExtension();
+
+                // On copie le fichier dans le dossier uploads
+                $image->move(
+                    $this->getParameter('images_directory'),
+                    $fichier
+                );
+
+                $img = new Image();
+                $img->setTitle($fichier);
+                $imageFiles[] = $img;
+            }
+
+            foreach ($users as $user) {
+                $newChallenge = new Challenge();
+                // Copier les données du formulaire dans cette nouvelle instance
+                $newChallenge->setTitle($challenge->getTitle());
+                $newChallenge->setDescription($challenge->getDescription());
+                $newChallenge->setType($challenge->getType());
+                $newChallenge->setStatus($challenge->getStatus());
+                $newChallenge->setGithub($challenge->getGithub());
+                $newChallenge->setCreatedAt($challenge->getCreatedAt());
+
+                // Associer l'utilisateur à ce nouveau challenge
+                $newChallenge->setUser($user);
+
+                // Associer les images à chaque nouvelle instance de Challenge
+                foreach ($imageFiles as $img) {
+                    $newImage = new Image();
+                    $newImage->setTitle($img->getTitle());
+                    $newChallenge->addImage($newImage);
+                }
+
+                $this->em->persist($newChallenge);
+            }
+            $this->em->flush();
+
+            $this->addFlash('success', 'Challenge created successfully');
+            //TODO : rediriger vers la page de détail du challenge
+            return $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('challenge/new.html.twig', [
+            'challenge' => $challenge,
+            'form' => $form
+        ]);
     }
 
     #[Route('/challenge/{id}/update', name: 'challenge_update', methods: ['PUT'])]
