@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Project{% endblock %}
+
+{% block body %}
+    <div class="col-md-6" style="float:none;margin:auto;">
+        <div class="d-flex align-items-center mt-2">
+            <div class="mr-auto p-2">
+                <a href="{{ path('app_home') }}" class="btn at_btn"><i class="fas fa-chevron-left"></i> Retour</a>
+            </div>
+            <div>
+                <h3>Nouveau projet</h3>
+            </div>
+        </div>
+
+        {{ include('project/_form.html.twig') }}
+    </div>
+
+{% endblock %}
