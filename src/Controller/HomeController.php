@@ -33,6 +33,7 @@ class HomeController extends AbstractController
                     $roadmap[$user->getId()]['items'][] = [
                         'type' => 'challenge',
                         'data' => $challenge,
+                        'createdAt' => $challenge->getCreatedAt(),
                     ];
                 }
             }
@@ -42,9 +43,15 @@ class HomeController extends AbstractController
                     $roadmap[$user->getId()]['items'][] = [
                         'type' => 'project',
                         'data' => $project,
+                        'createdAt' => $project->getCreatedAt(),
                     ];
                 }
             }
+
+            // Trier les items par createdAt dans l'ordre croissant
+            usort($roadmap[$user->getId()]['items'], function ($a, $b) {
+                return $a['createdAt'] <=> $b['createdAt'];
+            });
         }
         return $this->render('home/index.html.twig', [
             'roadmap' => $roadmap,
