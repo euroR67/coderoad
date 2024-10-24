@@ -1,0 +1,16 @@
+<div class="navbar">
+	<ul>
+		<li><a class="active" href="{{ path('app_home') }}">Accueil</a></li>
+		<li><a href="{{ path('challenge_create') }}">Créer un challenge</a></li>
+		<li><a href="{{ path('project_create') }}">Créer un projet</a></li>
+
+        {% if app.user %}
+            <li><a href="{{ path('app_profil') }}">{{app.user.username}}</a></li>
+            <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
+        {% else %}
+            <li><a href="{{ path('app_login') }}">Se connecter</a></li>
+            <li><a href="{{ path('app_register') }}">S'inscrire</a></li>
+        {% endif %}
+
+	</ul>
+</div>

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Uid\Uuid;
 
 class ProjectController extends AbstractController
 {
@@ -29,6 +30,9 @@ class ProjectController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $users = $userRepository->findAll();
+
+            // Générer un UUID commun à tous les projets créés
+            $uuid = Uuid::v4();
 
             $images = $form->get('images')->getData();
             $imageFiles = [];
@@ -57,6 +61,7 @@ class ProjectController extends AbstractController
                 $newProject->setStatus($project->getStatus());
                 $newProject->setGithub($project->getGithub());
                 $newProject->setCreatedAt($project->getCreatedAt());
+                $newProject->setUuid($uuid);
 
                 // Associer l'utilisateur à ce nouveau projet
                 $newProject->setUser($user);
@@ -92,14 +97,14 @@ class ProjectController extends AbstractController
         $currentUser = $this->getUser();
 
         if ($currentUser == null) {
-            return new JsonResponse(['error' => 'You are not logged in'], 403);
+            return new JsonResponse(['success' => false, 'message' => 'You are not logged in'], 403);
         }
 
         // Récupérer les données envoyées dans la requête (JSON)
         $data = json_decode($request->getContent(), true);
 
         if (!$data) {
-            return new JsonResponse(['error' => 'Invalid data'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'Invalid data'], 400);
         }
 
         // Parcourir les données pour modifier les propriétés correspondantes
@@ -111,13 +116,13 @@ class ProjectController extends AbstractController
                 try {
                     $value = new \DateTimeImmutable($value);  // Conversion de la chaîne en DateTimeImmutable
                 } catch (\Exception $e) {
-                    return new JsonResponse(['error' => 'Invalid date format'], 400);
+                    return new JsonResponse(['success' => false, 'message' => 'Invalid date format'], 400);
                 }
             }
             if (method_exists($project, $setter)) {
                 $project->$setter($value);
             } else {
-                return new JsonResponse(['error' => "Field '$field' does not exist"], 400);
+                return new JsonResponse(['success' => false, 'message' => "Field '$field' does not exist"], 400);
             }
         }
 
@@ -125,7 +130,7 @@ class ProjectController extends AbstractController
         $this->em->persist($project);
         $this->em->flush();
 
-        return new JsonResponse(['success' => 'Project updated successfully']);
+        return new JsonResponse(['success' => true, 'message' => 'Project updated successfully']);
     }
 
 
@@ -136,14 +141,14 @@ class ProjectController extends AbstractController
         $currentUser = $this->getUser();
 
         if ($currentUser?->getId() !== $project->getUser()->getId()) {
-            return new JsonResponse(['error' => 'You are not the author of this project'], 403);
+            return new JsonResponse(['success' => false, 'message' => 'You are not the author of this project'], 403);
         }
 
         $data = json_decode($request->getContent(), true);
 
         // check if the github key exists
         if (!array_key_exists('github', $data)) {
-            return new JsonResponse(['error' => 'No github provided'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'No github provided'], 400);
         }
 
         $github = $data['github'];
@@ -152,7 +157,7 @@ class ProjectController extends AbstractController
         $this->em->persist($project);
         $this->em->flush();
 
-        return new JsonResponse(['success' => 'Project github updated successfully']);
+        return new JsonResponse(['success' => true, 'message' => 'Project github updated successfully']);
     }
 
     #[Route('/project/{id}/status', name: 'edit_project_status', methods: ['PUT'])]
@@ -162,26 +167,26 @@ class ProjectController extends AbstractController
         $currentUser = $this->getUser();
 
         if ($currentUser?->getId() !== $project->getUser()->getId()) {
-            return new JsonResponse(['error' => 'You are not the author of this project'], 403);
+            return new JsonResponse(['success' => false, 'message' => 'You are not the author of this project'], 403);
         }
 
         $data = json_decode($request->getContent(), true);
 
         // check if the status key exists
         if (!array_key_exists('status', $data)) {
-            return new JsonResponse(['error' => 'No status provided'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'No status provided'], 400);
         }
 
         $status = $data['status'];
         // check if the status is valid (1 = todo, 2 = in progress, 3 = done)
         if (!in_array($status, [1, 2, 3])) {
-            return new JsonResponse(['error' => 'Invalid status'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'Invalid status'], 400);
         }
         $project->setStatus($status);
 
         $this->em->persist($project);
         $this->em->flush();
 
-        return new JsonResponse(['success' => 'Project status updated successfully']);
+        return new JsonResponse(['success' => true, 'message' => 'Project status updated successfully']);
     }
 }
