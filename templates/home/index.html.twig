@@ -14,10 +14,12 @@
 				</div>
 				{% for item in entry.items %}
 					<div class="tree">
-						<div class="task" onclick="showSidebar('{{ item.type }}', '{{ item.data.id }}','{{ item.data.title }}', '{{ item.data.description }}', '{{ item.data.github }}')">
+						<div class="task" onclick="showSidebar('{{ item.type }}', '{{ item.data.id }}','{{ item.data.title }}', '{{ item.data.description }}', '{{ item.data.github }}' , {{ item.isOwner ? 'true' : 'false' }})">
 							<div class="task__header {{item.data.status == 1 ? 'task__todo' : item.data.status == 2 ? 'task__inprogress' : 'task__done'}}">
 								<span class="status">{{ item.data.statusStr }}</span>
-        						<span class="menu" onclick="togglePopupMenu(event, {{ item.data.id }})">•••</span>
+								{% if item.isOwner %}
+									<span class="menu" onclick="togglePopupMenu(event, {{ item.data.id }})">•••</span>
+								{% endif %}
 							</div>
 							<div class="task__content">
 								{{ item.data.description}}
@@ -27,11 +29,11 @@
 							</div>
 
 							<!-- Popup menu pour modifier le statut -->
-                            <div id="popup-menu-{{ item.data.id }}" class="popup-menu" style="display: none;">
-                                <div onclick="updateStatus({{ item.data.id }}, '{{ item.type }}', 1, 'todo')">Todo</div>
-                                <div onclick="updateStatus({{ item.data.id }}, '{{ item.type }}', 2, 'in progress')">In progress</div>
-                                <div onclick="updateStatus({{ item.data.id }}, '{{ item.type }}', 3, 'done')">Done</div>
-                            </div>
+							<div id="popup-menu-{{ item.data.id }}" class="popup-menu" style="display: none;">
+								<div onclick="updateStatus(event, {{ item.data.id }}, '{{ item.type }}', 1, 'todo')">Todo</div>
+								<div onclick="updateStatus(event, {{ item.data.id }}, '{{ item.type }}', 2, 'in progress')">In progress</div>
+								<div onclick="updateStatus(event, {{ item.data.id }}, '{{ item.type }}', 3, 'done')">Done</div>
+							</div>
 						</div>
 						{% if not loop.last %}
 							<div class="connector"></div>

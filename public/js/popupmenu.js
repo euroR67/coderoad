@@ -1,5 +1,5 @@
 function togglePopupMenu(event, id) {
-  event.stopPropagation(); // Empêche la fermeture du popup si on clique dessus
+  event.stopPropagation();
 
   // Fermer tous les autres menus
   document.querySelectorAll(".popup-menu").forEach((menu) => {
@@ -12,12 +12,13 @@ function togglePopupMenu(event, id) {
 }
 
 // Fonction pour mettre à jour le statut de l'élément
-function updateStatus(id, type, status, statusStr) {
+function updateStatus(event, id, type, status, statusStr) {
+  event.stopPropagation();
   var url = `/${type}/${id}/status`;
 
   // Fermer le popup menu
   var menu = document.getElementById("popup-menu-" + id);
-  menu.style.display = "none";
+  menu.classList.remove("active");
 
   // Envoyer la nouvelle valeur du statut au backend (exemple de requête)
   fetch(url, {

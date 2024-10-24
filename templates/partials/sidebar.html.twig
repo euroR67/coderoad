@@ -3,18 +3,21 @@
 	<div class="sidebar-content">
 		<span class="close-btn" onclick="closeSidebar()">×</span>
 		<h2 id="item-title"></h2>
-        <span id="item-type" class="badge">New</span>
+		<span id="item-type" class="badge">New</span>
 		<p id="item-description"></p>
-        <br>
-        <a id="github-link" href="" target="_blank"></a>
-        <br>
-        <br>
-
-        <!-- Formulaire pour modifier l'URL GitHub -->
+		<br>
+		<a id="github-link" href="" target="_blank"></a>
+		<br>
+		<br>
+		
+		<!-- Formulaire pour modifier l'URL GitHub -->
 		<form id="github-form" onsubmit="submitGitHubForm(event)">
 			<label for="github-url">GitHub URL :</label>
-			<input type="text" id="github-url" name="github-url" placeholder="Entrez l'URL GitHub" />
+			<input type="text" id="github-url" name="github-url" placeholder="Entrez l'URL GitHub"/>
 			<button type="submit">Mettre à jour</button>
 		</form>
 	</div>
 </div>
+
+<!-- Overlay qui s'affichera quand la sidebar est active -->
+<div id="overlay" class="overlay" onclick="closeSidebar()"></div>

@@ -1,6 +1,6 @@
 var currentItemId;
 
-function showSidebar(type, id, title, description, github) {
+function showSidebar(type, id, title, description, github, isOwner) {
   var sidebar = document.getElementById("sidebar");
   sidebar.classList.add("sidebar-active");
 
@@ -12,10 +12,18 @@ function showSidebar(type, id, title, description, github) {
 
   document.getElementById("github-link").href = github || "#";
   document.getElementById("github-link").innerText = github || "";
-  console.log("github", github);
 
   // Ajouter l'URL GitHub dans le champ du formulaire
   document.getElementById("github-url").value = github || "";
+
+  // Afficher ou masquer le formulaire selon la propriété de l'utilisateur
+  var githubForm = document.getElementById("github-form");
+
+  if (isOwner == false) {
+    githubForm.style.display = "none";
+  } else {
+    githubForm.style.display = "block";
+  }
 
   currentItemId = id;
 }

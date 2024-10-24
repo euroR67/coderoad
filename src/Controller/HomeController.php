@@ -17,6 +17,8 @@ class HomeController extends AbstractController
         $users = $userRepo->findAll();
         $challenges = $challengeRepo->findAll();
         $projects = $projectRepo->findAll();
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
 
         $roadmap = [];
 
@@ -34,6 +36,7 @@ class HomeController extends AbstractController
                         'type' => 'challenge',
                         'data' => $challenge,
                         'createdAt' => $challenge->getCreatedAt(),
+                        'isOwner' => $currentUser && $currentUser->getId() === $user->getId(),
                     ];
                 }
             }
@@ -44,6 +47,7 @@ class HomeController extends AbstractController
                         'type' => 'project',
                         'data' => $project,
                         'createdAt' => $project->getCreatedAt(),
+                        'isOwner' => $currentUser && $currentUser->getId() === $user->getId(),
                     ];
                 }
             }
