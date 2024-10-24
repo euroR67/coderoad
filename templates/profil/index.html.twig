@@ -17,16 +17,21 @@
 						<div class="task" onclick="showSidebar('{{ item.type }}', '{{ item.data.id }}','{{ item.data.title }}', '{{ item.data.description }}', '{{ item.data.github }}')">
 							<div class="task__header {{item.data.status == 1 ? 'task__todo' : item.data.status == 2 ? 'task__inprogress' : 'task__done'}}">
 								<span class="status">{{ item.data.statusStr }}</span>
-								<span class="menu">•••</span>
+        						<span class="menu" onclick="togglePopupMenu(event, {{ item.data.id }})">•••</span>
 							</div>
 							<div class="task__content">
 								{{ item.data.description}}
 							</div>
 							<div class="task__footer">
-
 								{{ item.type == 'challenge' ? 'challenge' : 'projet' }}
-
 							</div>
+
+							<!-- Popup menu pour modifier le statut -->
+                            <div id="popup-menu-{{ item.data.id }}" class="popup-menu" style="display: none;">
+                                <div onclick="updateStatus({{ item.data.id }}, '{{ item.type }}', 1, 'todo')">Todo</div>
+                                <div onclick="updateStatus({{ item.data.id }}, '{{ item.type }}', 2, 'in progress')">In progress</div>
+                                <div onclick="updateStatus({{ item.data.id }}, '{{ item.type }}', 3, 'done')">Done</div>
+                            </div>
 						</div>
 						{% if not loop.last %}
 							<div class="connector"></div>
