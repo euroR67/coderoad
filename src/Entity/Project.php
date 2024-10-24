@@ -44,6 +44,9 @@ class Project
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'project', cascade: ['persist', 'remove'])]
     private Collection $images;
 
+    #[ORM\Column(length: 255)]
+    private ?string $uuid = null;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -164,6 +167,18 @@ class Project
                 $image->setProject(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): static
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

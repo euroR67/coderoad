@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Uid\Uuid;
 
 class ProjectController extends AbstractController
 {
@@ -29,6 +30,9 @@ class ProjectController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $users = $userRepository->findAll();
+
+            // Générer un UUID commun à tous les projets créés
+            $uuid = Uuid::v4();
 
             $images = $form->get('images')->getData();
             $imageFiles = [];
@@ -57,6 +61,7 @@ class ProjectController extends AbstractController
                 $newProject->setStatus($project->getStatus());
                 $newProject->setGithub($project->getGithub());
                 $newProject->setCreatedAt($project->getCreatedAt());
+                $newProject->setUuid($uuid);
 
                 // Associer l'utilisateur à ce nouveau projet
                 $newProject->setUser($user);
