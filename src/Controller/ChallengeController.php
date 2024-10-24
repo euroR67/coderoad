@@ -139,7 +139,7 @@ class ChallengeController extends AbstractController
     #[Route('/challenge/{id}/github', name: 'edit_challenge_github', methods: ['PUT'])]
     public function editChallengeGithub(Challenge $challenge, Request $request)
     {
-        /** @var $currentUser User */
+        /** @var User $currentUser  */
         $currentUser = $this->getUser();
 
         if ($currentUser?->getId() !== $challenge->getUser()->getId()) {

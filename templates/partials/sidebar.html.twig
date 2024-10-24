@@ -1,0 +1,39 @@
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+	<div class="sidebar-content">
+		<span class="close-btn" onclick="closeSidebar()">×</span>
+		<h2 id="item-type"></h2>
+		<p id="item-description"></p>
+	</div>
+</div>
+
+<script>
+	function showSidebar(type, description) { // Afficher la sidebar
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.add("sidebar-active");
+
+        // Ajouter les informations de l'élément
+        document.getElementById("item-type").innerText = type === 'challenge' ? 'Challenge' : 'Project';
+        document.getElementById("item-description").innerText = description;
+    }
+
+    function closeSidebar() { // Fermer la sidebar
+        var sidebar = document.getElementById("sidebar");
+        sidebar.classList.remove("sidebar-active");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Sélectionne toutes les cartes
+        const cards = document.querySelectorAll('.task');
+
+        // Ajoute un écouteur de clic sur chaque carte
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                cards.forEach(card => {
+                    card.classList.remove('active');
+                });
+                card.classList.add('active');
+            });
+        });
+    });
+</script>

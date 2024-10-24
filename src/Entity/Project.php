@@ -47,6 +47,8 @@ class Project
     #[ORM\Column(length: 255)]
     private ?string $uuid = null;
 
+    private ?string $statusStr = null;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -181,5 +183,16 @@ class Project
         $this->uuid = $uuid;
 
         return $this;
+    }
+
+    public function getStatusStr(): ?string
+    {
+        if ($this->status === 1) {
+            return 'todo';
+        } elseif ($this->status === 2) {
+            return 'in progress';
+        } elseif ($this->status === 3) {
+            return 'done';
+        }
     }
 }
