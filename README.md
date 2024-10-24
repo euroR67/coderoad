@@ -64,10 +64,12 @@ Mettez en place la base de données :
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
+php bin/console doctrine:schema:update --force
 ```
 Démarrez le serveur local Symfony :
 ```bash
 symfony server:start
 ```
-Contribution
+## Contribution:
+
 Vous êtes invités à proposer des améliorations ou à signaler des bugs via des pull requests ou en ouvrant une issue sur GitHub.
