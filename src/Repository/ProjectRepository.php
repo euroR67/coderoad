@@ -16,6 +16,17 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
+    public function findUniqueProjectsByUUID()
+    {
+        // Crée une sous-requête pour sélectionner le challenge le plus récent par UUID
+        $qb = $this->createQueryBuilder('p')
+            ->select('p')
+            ->groupBy('p.uuid')
+            ->orderBy('p.createdAt', 'DESC'); // Ou 'ASC' selon ton critère de sélection
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Project[] Returns an array of Project objects
     //     */
