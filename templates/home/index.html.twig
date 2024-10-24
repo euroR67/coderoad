@@ -14,7 +14,7 @@
 				</div>
 				{% for item in entry.items %}
 					<div class="tree">
-						<div class="task" onclick="showSidebar('{{ item.type }}', '{{ item.data.description }}')">
+						<div class="task" onclick="showSidebar('{{ item.type }}', '{{ item.data.id }}','{{ item.data.title }}', '{{ item.data.description }}', '{{ item.data.github }}')">
 							<div class="task__header {{item.data.status == 1 ? 'task__todo' : item.data.status == 2 ? 'task__inprogress' : 'task__done'}}">
 								<span class="status">{{ item.data.statusStr }}</span>
 								<span class="menu">•••</span>
