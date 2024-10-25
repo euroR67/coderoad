@@ -18,11 +18,13 @@ class ProjectRepository extends ServiceEntityRepository
 
     public function findUniqueProjectsByUUID()
     {
-        // Crée une sous-requête pour sélectionner le challenge le plus récent par UUID
         $qb = $this->createQueryBuilder('p')
             ->select('p')
-            ->groupBy('p.uuid')
-            ->orderBy('p.createdAt', 'DESC'); // Ou 'ASC' selon ton critère de sélection
+            ->where('p.id IN (
+                SELECT MIN(p2.id) 
+                FROM App\Entity\Project p2
+                GROUP BY p2.uuid
+            )');
 
         return $qb->getQuery()->getResult();
     }

@@ -18,11 +18,13 @@ class ChallengeRepository extends ServiceEntityRepository
 
     public function findUniqueChallengesByUUID()
     {
-        // Crée une sous-requête pour sélectionner le challenge le plus récent par UUID
         $qb = $this->createQueryBuilder('c')
             ->select('c')
-            ->groupBy('c.uuid')
-            ->orderBy('c.createdAt', 'DESC'); // Ou 'ASC' selon ton critère de sélection
+            ->where('c.id IN (
+                SELECT MIN(c2.id) 
+                FROM App\Entity\Challenge c2
+                GROUP BY c2.uuid
+            )');
 
         return $qb->getQuery()->getResult();
     }
