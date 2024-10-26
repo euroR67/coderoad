@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\Project;
 use App\Form\ProjectFormType;
+use App\Repository\ProjectRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Uid\Uuid;
 
 class ProjectController extends AbstractController
@@ -66,7 +68,7 @@ class ProjectController extends AbstractController
                 // Associer l'utilisateur à ce nouveau projet
                 $newProject->setUser($user);
 
-                // Associer les images à chaque nouvelle instance de Challenge
+                // Associer les images à chaque nouvelle instance de Project
                 foreach ($imageFiles as $img) {
                     $newImage = new Image();
                     $newImage->setTitle($img->getTitle());
@@ -88,49 +90,57 @@ class ProjectController extends AbstractController
         ]);
     }
 
-    #[Route('/project/{id}/update', name: 'project_update', methods: ['PUT'])]
-    public function updateProject(
-        Request $request,
-        Project $project,
-    ): JsonResponse {
-        /** @var $currentUser User */
-        $currentUser = $this->getUser();
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/project/{id}/update', name: 'project_update')]
+    public function updateProject(Project $project, Request $request, ProjectRepository $projectRepo): Response
+    {
+        $form = $this->createForm(ProjectFormType::class, $project, [
+            'is_edit' => true,
+        ]);
+        $form->handleRequest($request);
 
-        if ($currentUser == null) {
-            return new JsonResponse(['success' => false, 'message' => 'You are not logged in'], 403);
-        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Get all projects with same uuid
+            $projects = $projectRepo->findBy(['uuid' => $project->getUuid()]);
 
-        // Récupérer les données envoyées dans la requête (JSON)
-        $data = json_decode($request->getContent(), true);
+            foreach ($projects as $project) {
+                $project->setTitle($form->get('title')->getData());
+                $project->setDescription($form->get('description')->getData());
+                // $project->setStatus($form->get('status')->getData());
+                $project->setGithub($form->get('github')->getData());
+                $project->setCreatedAt($form->get('createdAt')->getData());
 
-        if (!$data) {
-            return new JsonResponse(['success' => false, 'message' => 'Invalid data'], 400);
-        }
-
-        // Parcourir les données pour modifier les propriétés correspondantes
-        foreach ($data as $field => $value) {
-            // Vérifier que la méthode "set" correspondante existe
-            $setter = 'set' . ucfirst($field);
-            // Traitement spécial pour les champs de type DateTimeImmutable
-            if ($field === 'createdAt' || $field === 'updatedAt') {
-                try {
-                    $value = new \DateTimeImmutable($value);  // Conversion de la chaîne en DateTimeImmutable
-                } catch (\Exception $e) {
-                    return new JsonResponse(['success' => false, 'message' => 'Invalid date format'], 400);
-                }
+                $this->em->persist($project);
             }
-            if (method_exists($project, $setter)) {
-                $project->$setter($value);
-            } else {
-                return new JsonResponse(['success' => false, 'message' => "Field '$field' does not exist"], 400);
-            }
+
+            $this->em->flush();
+
+            $this->addFlash('success', 'Project updated successfully');
+            return $this->redirectToRoute('app_home');
         }
 
-        // Sauvegarder les modifications en base de données
-        $this->em->persist($project);
+
+        return $this->render('project/edit.html.twig', [
+            'project' => $project,
+            'form' => $form
+        ]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/project/{id}', name: 'project_delete')]
+    public function deleteProject(Project $project, ProjectRepository $projectRepo): Response
+    {
+        // Get all projects with same uuid
+        $projects = $projectRepo->findBy(['uuid' => $project->getUuid()]);
+
+        foreach ($projects as $project) {
+            $this->em->remove($project);
+        }
+
         $this->em->flush();
 
-        return new JsonResponse(['success' => true, 'message' => 'Project updated successfully']);
+        $this->addFlash('success', 'Projects deleted successfully');
+        return $this->redirectToRoute('app_home');
     }
 
 

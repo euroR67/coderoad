@@ -16,6 +16,17 @@ function showSidebar(type, id, title, description, github, isOwner) {
   // Ajouter l'URL GitHub dans le champ du formulaire
   document.getElementById("github-url").value = github || "";
 
+  // Mise à jour dynamique du lien de modification
+  var editLink = document.getElementById("edit-link");
+  // if editLink is exist
+  if (editLink) {
+    if (type === "challenge") {
+      editLink.href = `/challenge/${id}/update`;
+    } else if (type === "project") {
+      editLink.href = `/project/${id}/update`;
+    }
+  }
+
   // Afficher ou masquer le formulaire selon la propriété de l'utilisateur
   var githubForm = document.getElementById("github-form");
 

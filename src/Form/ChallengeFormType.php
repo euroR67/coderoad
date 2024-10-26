@@ -47,17 +47,26 @@ class ChallengeFormType extends AbstractType
                     'accept' => 'image/*',
                     'multiple' => 'multiple'
                 ],
-            ])
-            ->add('createdAt', null, [
+            ]);
+
+        // Conditionner l'ajout de la date actuelle
+        if (!$options['is_edit']) {
+            $builder->add('createdAt', null, [
                 'widget' => 'single_text',
                 'data' => new \DateTimeImmutable(),
             ]);
+        } else {
+            $builder->add('createdAt', null, [
+                'widget' => 'single_text',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Challenge::class,
+            'is_edit' => false,
         ]);
     }
 }
