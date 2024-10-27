@@ -1,0 +1,124 @@
+/* Les variables pour les courleurs et les polices. 
+Elles sont commenté ici car elles sont là juste pour 
+  les consulter et de ne pas devoir aller chercher leur noms ailleurs.
+  Les variables se trouvent dans le fichier app.css  */
+  
+/* :root {
+--background-color: #0E0D15;
+--text-color: white;
+--task-background-color: #191726;
+--task-active-border-color: linear-gradient(90deg, rgba(38,64,169,1) 10%, rgba(180,144,226,1) 33%, rgba(250,203,126,1) 66%, rgba(133,246,229,1) 90%);
+--task-todo-background-color: #09336c;
+--task-inprogress-background-color: #e68200;
+--task-done-background-color: #206e4e;
+--sidebar-background-color: #232323;
+--sidebar-border-color: #00b447;
+--popup-menu-background-color: #333;
+--popup-menu-hover-background-color: #555;
+--overlay-background-color: rgba(0, 0, 0, 0.5);
+--font-primary: 'Roboto Mono', sans-serif;
+--font-secondary: 'Roboto', monospace;
+--gradient-outline: linear-gradient(90deg, rgba(38,64,169,1) 10%, rgba(180,144,226,1) 33%, rgba(250,203,126,1) 66%, rgba(133,246,229,1) 90%);
+} */
+  
+
+
+/* NAVBAR */
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: var(--background-color);
+    font-family: 'Roboto', sans-serif;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    width: 60px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.navbar .nav-links {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.navbar .nav-links ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar .nav-links ul li {
+    margin: 0 10px;
+}
+
+.navbar .nav-links ul li a {
+    display: block;
+    color: #828187;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.navbar .user-actions {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .user-actions ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar .user-actions ul li {
+    margin: 0 10px;
+}
+
+.navbar .user-actions ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.profile {
+    border: 1px solid transparent;
+    border-radius: 10px;
+    border-image: linear-gradient(90deg, rgba(38,64,169,1) 10%, rgba(180,144,226,1) 33%, rgba(250,203,126,1) 66%, rgba(133,246,229,1) 90%);
+    border-image-slice: 1;
+}
+
+
+
+
+
+
+/* .navbar ul li a:hover {
+background-color: #111;
+}
+*/
+/* .badge {
+background-color: #00b447;
+color: white;
+padding: 4px 8px;
+text-align: center;
+border-radius: 5px;
+font-size: 12px;
+} */
+
+/* NAVBAR */
+/* NAVBAR */
