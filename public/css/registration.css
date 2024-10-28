@@ -1,0 +1,80 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-evenly;
+    height: 100vh;
+    padding: 30px;
+}
+
+form {
+    width: 30%;
+    height: auto;
+    margin: 20px;
+    padding: 100px 30px;
+    border: 2px solid transparent; /* Nécessaire pour la propriété border-image */
+    border-image: radial-gradient(circle, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%) 1;
+    border-radius: 30px;
+}
+
+.form-input {
+    background-color: #191726;
+    color: white;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    margin-bottom: 30px;
+    padding: 20px;
+    outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+input[type="form-checkbox"]:focus {
+    outline: none;
+}
+
+
+
+.text-accroche {
+    width: 50%;
+    height: auto;
+}
+
+.text-accroche span {
+    white-space: wrap;
+    text-overflow: ellipsis;
+    font-size: 3.43em;
+}
+
+p {
+    padding-top: 50px;
+    font-size: 1.5em;
+    color: rgba(255, 255, 255, 0.437);
+    white-space: wrap;
+    text-overflow: ellipsis;
+}
+
+
+

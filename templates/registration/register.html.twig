@@ -1,19 +1,25 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+			<link rel="stylesheet" href="{{ asset('css/registration.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+{% endblock %}
+
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
-
+<div class="flex-container">
+    <div class="text-accroche">
+        <span>Embarquez avec Coderoad pour devenir le développeur web que vous aspirez à être !</span>
+        <p>Créez votre compte dès maintenant et commencez à coder !</p>
+    </div>
     {{ form_errors(registrationForm) }}
+        {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.username) }}
+            {{ form_row(registrationForm.plainPassword) }}
+            {{ form_row(registrationForm.agreeTerms) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            <button type="submit" class="btn form-submit">LOG IN</button>
+        {{ form_end(registrationForm) }}
+</div>
 {% endblock %}
