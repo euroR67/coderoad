@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Challenge;
 use App\Entity\Image;
 use App\Form\ChallengeFormType;
+use App\Repository\ChallengeRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Uid\Uuid;
 
 class ChallengeController extends AbstractController
 {
@@ -24,11 +27,16 @@ class ChallengeController extends AbstractController
     {
         // formulaire de création de challenge
         $challenge = new Challenge();
-        $form = $this->createForm(ChallengeFormType::class, $challenge);
+        $form = $this->createForm(ChallengeFormType::class, $challenge, [
+            'is_edit' => false,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $users = $userRepository->findAll();
+
+            // Générer un UUID commun à tous les challenges créés
+            $uuid = Uuid::v4();
 
             $images = $form->get('images')->getData();
             $imageFiles = [];
@@ -58,6 +66,7 @@ class ChallengeController extends AbstractController
                 $newChallenge->setStatus($challenge->getStatus());
                 $newChallenge->setGithub($challenge->getGithub());
                 $newChallenge->setCreatedAt($challenge->getCreatedAt());
+                $newChallenge->setUuid($uuid);
 
                 // Associer l'utilisateur à ce nouveau challenge
                 $newChallenge->setUser($user);
@@ -84,68 +93,75 @@ class ChallengeController extends AbstractController
         ]);
     }
 
-    #[Route('/challenge/{id}/update', name: 'challenge_update', methods: ['PUT'])]
-    public function updateChallenge(
-        Request $request,
-        Challenge $challenge,
-    ): JsonResponse {
-        /** @var $currentUser User */
-        $currentUser = $this->getUser();
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/challenge/{id}/update', name: 'challenge_update')]
+    public function updateChallenge(Challenge $challenge, Request $request, ChallengeRepository $challengeRepo): Response
+    {
+        $form = $this->createForm(ChallengeFormType::class, $challenge, [
+            'is_edit' => true,
+        ]);
+        $form->handleRequest($request);
 
-        if ($currentUser == null) {
-            return new JsonResponse(['error' => 'You are not logged in'], 403);
-        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Get all challenges with same uuid
+            $challenges = $challengeRepo->findBy(['uuid' => $challenge->getUuid()]);
 
-        // Récupérer les données envoyées dans la requête (JSON)
-        $data = json_decode($request->getContent(), true);
+            foreach ($challenges as $challenge) {
+                $challenge->setTitle($form->get('title')->getData());
+                $challenge->setDescription($form->get('description')->getData());
+                $challenge->setType($form->get('type')->getData());
+                // $challenge->setStatus($form->get('status')->getData());
+                $challenge->setGithub($form->get('github')->getData());
+                $challenge->setCreatedAt($form->get('createdAt')->getData());
 
-        if (!$data) {
-            return new JsonResponse(['error' => 'Invalid data'], 400);
-        }
-
-        // Parcourir les données pour modifier les propriétés correspondantes
-        foreach ($data as $field => $value) {
-            // Vérifier que la méthode "set" correspondante existe
-            $setter = 'set' . ucfirst($field);
-            // Traitement spécial pour les champs de type DateTimeImmutable
-            if ($field === 'createdAt' || $field === 'updatedAt') {
-                try {
-                    $value = new \DateTimeImmutable($value);  // Conversion de la chaîne en DateTimeImmutable
-                } catch (\Exception $e) {
-                    return new JsonResponse(['error' => 'Invalid date format'], 400);
-                }
+                $this->em->persist($challenge);
             }
 
-            if (method_exists($challenge, $setter)) {
-                $challenge->$setter($value);
-            } else {
-                return new JsonResponse(['error' => "Field '$field' does not exist"], 400);
-            }
+            $this->em->flush();
+
+            $this->addFlash('success', 'Challenge updated successfully');
+            return $this->redirectToRoute('app_home');
         }
 
-        // Sauvegarder les modifications en base de données
-        $this->em->persist($challenge);
-        $this->em->flush();
 
-        return new JsonResponse(['success' => 'Challenge updated successfully']);
+        return $this->render('challenge/edit.html.twig', [
+            'challenge' => $challenge,
+            'form' => $form
+        ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/challenge/{id}', name: 'challenge_delete')]
+    public function deleteChallenge(Challenge $challenge, ChallengeRepository $challengeRepo): Response
+    {
+        // Get all challenges with same uuid
+        $challenges = $challengeRepo->findBy(['uuid' => $challenge->getUuid()]);
+
+        foreach ($challenges as $challenge) {
+            $this->em->remove($challenge);
+        }
+
+        $this->em->flush();
+
+        $this->addFlash('success', 'Challenges deleted successfully');
+        return $this->redirectToRoute('app_home');
+    }
 
     #[Route('/challenge/{id}/github', name: 'edit_challenge_github', methods: ['PUT'])]
     public function editChallengeGithub(Challenge $challenge, Request $request)
     {
-        /** @var $currentUser User */
+        /** @var User $currentUser  */
         $currentUser = $this->getUser();
 
         if ($currentUser?->getId() !== $challenge->getUser()->getId()) {
-            return new JsonResponse(['error' => 'You are not the author of this challenge'], 403);
+            return new JsonResponse(['success' => false, 'message' => 'You are not the author of this challenge'], 403);
         }
 
         $data = json_decode($request->getContent(), true);
 
         // check if the github key exists
         if (!array_key_exists('github', $data)) {
-            return new JsonResponse(['error' => 'No github provided'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'No github provided'], 400);
         }
 
         $github = $data['github'];
@@ -154,7 +170,7 @@ class ChallengeController extends AbstractController
         $this->em->persist($challenge);
         $this->em->flush();
 
-        return new JsonResponse(['success' => 'Challenge github updated successfully']);
+        return new JsonResponse(['success' => true, 'message' => 'Challenge github updated successfully']);
     }
 
     #[Route('/challenge/{id}/status', name: 'edit_challenge_status', methods: ['PUT'])]
@@ -164,26 +180,26 @@ class ChallengeController extends AbstractController
         $currentUser = $this->getUser();
 
         if ($currentUser?->getId() !== $challenge->getUser()->getId()) {
-            return new JsonResponse(['error' => 'You are not the author of this challenge'], 403);
+            return new JsonResponse(['success' => false, 'message' => 'You are not the author of this challenge'], 403);
         }
 
         $data = json_decode($request->getContent(), true);
 
         // check if the status key exists
         if (!array_key_exists('status', $data)) {
-            return new JsonResponse(['error' => 'No status provided'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'No status provided'], 400);
         }
 
         $status = $data['status'];
         // check if the status is valid (1 = todo, 2 = in progress, 3 = done)
         if (!in_array($status, [1, 2, 3])) {
-            return new JsonResponse(['error' => 'Invalid status'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'Invalid status'], 400);
         }
         $challenge->setStatus($status);
 
         $this->em->persist($challenge);
         $this->em->flush();
 
-        return new JsonResponse(['success' => 'Challenge status updated successfully']);
+        return new JsonResponse(['success' => true, 'message' => 'Challenge status updated successfully']);
     }
 }

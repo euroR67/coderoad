@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Project{% endblock %}
+
+{% block body %}
+    <div class="col-md-6" style="float:none;margin:auto;">
+        <div class="d-flex align-items-center mt-2">
+            <div>
+                <h3>Modifier un projet</h3>
+            </div>
+        </div>
+
+        {{ include('challenge/_form.html.twig') }}
+
+        <br><br>
+
+        <form method="post" action="{{ path('challenge_delete', {'id': challenge.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ challenge.id) }}">
+            <button class="btn btn-danger mt-3">Supprimer</button>
+        </form>
+
+    </div>
+
+{% endblock %}

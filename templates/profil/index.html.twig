@@ -14,12 +14,10 @@
 				</div>
 				{% for item in entry.items %}
 					<div class="tree">
-						<div class="task" onclick="showSidebar('{{ item.type }}', '{{ item.data.id }}','{{ item.data.title }}', '{{ item.data.description }}', '{{ item.data.github }}' , {{ item.isOwner ? 'true' : 'false' }})">
+						<div class="task" onclick="showSidebar('{{ item.type }}', '{{ item.data.id }}','{{ item.data.title }}', '{{ item.data.description }}', '{{ item.data.github }}')">
 							<div class="task__header {{item.data.status == 1 ? 'task__todo' : item.data.status == 2 ? 'task__inprogress' : 'task__done'}}">
 								<span class="status">{{ item.data.statusStr }}</span>
-								{% if item.isOwner %}
-									<span class="menu" onclick="togglePopupMenu(event, {{ item.data.id }})">•••</span>
-								{% endif %}
+								<span class="menu" onclick="togglePopupMenu(event, {{ item.data.id }})">•••</span>
 							</div>
 							<div class="task__content">
 								{{ item.data.description}}

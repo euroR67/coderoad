@@ -48,6 +48,11 @@ class Challenge
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'challenge', cascade: ['persist', 'remove'])]
     private Collection $images;
 
+    #[ORM\Column(length: 255)]
+    private ?string $uuid = null;
+
+    private ?string $statusStr = null;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -94,7 +99,7 @@ class Challenge
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): int
     {
         return $this->status;
     }
@@ -182,5 +187,28 @@ class Challenge
         }
 
         return $this;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): static
+    {
+        $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    public function getStatusStr(): ?string
+    {
+        if ($this->status === 1) {
+            return 'todo';
+        } elseif ($this->status === 2) {
+            return 'in progress';
+        } elseif ($this->status === 3) {
+            return 'done';
+        }
     }
 }

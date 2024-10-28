@@ -16,6 +16,19 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
+    public function findUniqueProjectsByUUID()
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p')
+            ->where('p.id IN (
+                SELECT MIN(p2.id) 
+                FROM App\Entity\Project p2
+                GROUP BY p2.uuid
+            )');
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Project[] Returns an array of Project objects
     //     */
