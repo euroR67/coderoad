@@ -1,35 +1,43 @@
-<div class="navbar">
-	<ul>
-		<li>
-			<a class="active" href="{{ path('app_home') }}">Accueil</a>
-		</li>
-
-		{% if is_granted('ROLE_ADMIN') %}
-
-			<li>
-				<a href="{{ path('challenge_create') }}">Créer un challenge</a>
-			</li>
-			<li>
-				<a href="{{ path('project_create') }}">Créer un projet</a>
-			</li>
-
-		{% endif %}
-
-		{% if app.user %}
-			<li>
-				<a href="{{ path('app_profil') }}">{{app.user.username}}</a>
-			</li>
-			<li>
-				<a href="{{ path('app_logout') }}">Se déconnecter</a>
-			</li>
-		{% else %}
-			<li>
-				<a href="{{ path('app_login') }}">Se connecter</a>
-			</li>
-			<li>
-				<a href="{{ path('app_register') }}">S'inscrire</a>
-			</li>
-		{% endif %}
-
-	</ul>
-</div>
+<header>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{{ asset('../assets/images/logo-coderoad.png') }}" alt="Logo">
+            <h1>Coderoad</h1>
+        </div>
+        <div class="nav-links">
+            <ul>
+                <li>
+                    <a class="active" href="{{ path('app_home') }}">Accueil</a>
+                </li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li>
+                        <a href="{{ path('challenge_create') }}">Créer un challenge</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('project_create') }}">Créer un projet</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="user-actions">
+            <ul>
+                {% if app.user %}
+                    <li>
+                        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+                    </li>
+                    <li>
+                        <a class="profile" href="{{ path('app_profil') }}">{{ app.user.username }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ path('app_login') }}">Se connecter</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_register') }}">S'inscrire</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    
+</header>
