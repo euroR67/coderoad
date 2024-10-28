@@ -22,6 +22,11 @@
   box-sizing: border-box;
 }
 
+main, header {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 
 /* NAVBAR */
 .navbar h1, h2, h3, h4, h5, h6 {
@@ -84,18 +89,35 @@ a {
   background-color: #232323;
   color: white;
   width: 250px;
-  border-radius: 11px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   margin: 10px 0;
   position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .task.active {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
   transform: scale(1);
-  border: 1px solid transparent;
-  border-image: var(--task-active-border-color) 1;
-  border-image-slice: 1;
+}
+
+.task.active {
+  position: relative;
+}
+
+.task.active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px; /* Adjusted border-radius */
+  padding: 2px; /* Added padding */
+  background: var(--task-active-border-color) border-box; /* Kept the same background */
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  z-index: 3;
 }
 
 .task__header {
@@ -103,8 +125,6 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   padding: 5px;
   color: white;
   font-weight: bold;
@@ -136,8 +156,6 @@ a {
   justify-content: right;
   align-items: center;
   background-color: #363636;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
   padding: 5px;
   color: white;
   font-size: 12px;

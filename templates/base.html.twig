@@ -29,7 +29,9 @@
 	</head>
 	<body>
 		{% include "partials/nav.html.twig" %}
-		{% block body %}{% endblock %}
+		<main>
+			{% block body %}{% endblock %}
+		</main>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 		<script src="{{ asset('js/sidebar.js') }}"></script>
 		<script src="{{ asset('js/popupmenu.js') }}"></script>
