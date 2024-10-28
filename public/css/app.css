@@ -39,7 +39,6 @@ main, header {
 }
 
 /* NAVBAR */
-
 .container {
   display: flex;
   justify-content: center;
@@ -49,6 +48,7 @@ main, header {
 body {
   background-color: #0E0D15;
   font-family: Arial, sans-serif;
+
   color: white;
 }
 
@@ -166,7 +166,6 @@ a {
   background-color: #00b447;
   height: 30px;
 }
-
 
 /* SIDEBAR */
 /* SIDEBAR */

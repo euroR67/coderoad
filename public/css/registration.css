@@ -1,0 +1,210 @@
+:root {
+    --background-color: #0E0D15;
+    --text-color: white;
+    --task-background-color: #191726;
+    --task-active-border-color: linear-gradient(90deg, rgba(38,64,169,1) 10%, rgba(180,144,226,1) 33%, rgba(250,203,126,1) 66%, rgba(133,246,229,1) 90%);
+    --task-todo-background-color: #09336c;
+    --task-inprogress-background-color: #e68200;
+    --task-done-background-color: #206e4e;
+    --sidebar-background-color: #232323;
+    --sidebar-border-color: #00b447;
+    --popup-menu-background-color: #333;
+    --popup-menu-hover-background-color: #555;
+    --overlay-background-color: rgba(0, 0, 0, 0.5);
+    --font-primary: 'Roboto Mono', sans-serif;
+    --font-secondary: 'Roboto', monospace;
+    --gradient-outline: linear-gradient(90deg, rgba(38,64,169,1) 10%, rgba(180,144,226,1) 33%, rgba(250,203,126,1) 66%, rgba(133,246,229,1) 90%);
+  }
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-evenly;
+    height: 100vh;
+    padding: 30px;
+    background-color: #0E0D15;
+}
+
+form {
+    position: relative;
+    width: 600px;
+    height: fit-content;
+    margin: 20px;
+    padding: 40px;
+    background-color: #0E0D15; 
+    border-radius: 30px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 2px;
+    border-radius: 30px;
+    background: var(--task-active-border-color) border-box;
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    z-index: -1;
+}
+
+form::after {
+    content: '';
+    position: absolute;
+    top: 17px;
+    right: -57px;
+    background-color: #191726;
+    -webkit-border-top-right-radius: 60px;
+    -webkit-border-bottom-right-radius: 60px;
+    -moz-border-radius-topright: 60px;
+    -moz-border-radius-bottomright: 60px;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+    width: 60px;
+    height: 95%;
+    border: 30px;
+    z-index: -5;
+}
+
+.domino-effect::after {
+    content: '';
+    position: absolute;
+    top: 60px;
+    right: -100px;
+    background-color: #110F1C;
+    -webkit-border-top-right-radius: 60px;
+    -webkit-border-bottom-right-radius: 60px;
+    -moz-border-radius-topright: 60px;
+    -moz-border-radius-bottomright: 60px;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+    width: 60px;
+    height: 80%;
+    border: 30px;
+    z-index: -500;
+}
+
+.form-input {
+    background-color: #0E0D15;
+    color: white;
+    border: none;
+    border-bottom: 2px solid #cccccc66; /* Couleur de la bordure par défaut */
+    padding: 20px;
+    margin: 20px 0;
+    outline: none;
+    border-radius: 0;  
+    width: 100%;
+}
+
+.icon-label {
+    display: flex;
+    align-items: center; /* Aligne verticalement l'icône et le texte */
+}
+
+.icon-label::before {
+    content: '\f007'; /* Code Unicode de l'icône utilisateur (ajuste-le selon l'icône que tu veux) */
+    font-family: 'Font Awesome 5 Free'; /* Assure-toi que la police est correcte */
+    font-weight: 900; /* Ou le poids approprié pour l'icône */
+    margin-right: 8px; /* Espace entre l'icône et le texte */
+}
+
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+input[type="form-checkbox"]:focus {
+    outline: none;
+}
+
+.btn.form-submit {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    height: 60px;
+    margin: 20px 0 20px 0;
+    font-size: 1.5em;/* Place le bouton en bas */
+    cursor: pointer;
+}
+
+form :nth-child(4) {
+    padding: 20px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.form-checkbox {    
+    height: 20px;
+    width: 20px;
+    font-size: 1.2rem;
+    border: none;
+    outline: none;  
+    cursor: pointer;
+    display: flex;
+    justify-content: space-around;
+}
+
+.required, .input {
+    font-size: 1.2rem;
+    color:#ccccccc1;
+    cursor: pointer;
+}
+
+.required:hover, .input:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.background-logo {
+    z-index: -3;
+    opacity: 0.1;
+}
+
+.text-accroche {
+    width: 50%;
+    height: auto;
+}
+
+#registration_form_username, #registration_form_plainPassword_first, #registration_form_plainPassword_second {
+    font-size: 1.2rem;
+}
+
+.text-accroche span {
+    white-space: wrap;
+    text-overflow: ellipsis;
+    font-size: 3.43em;
+}
+
+p {
+    padding-top: 50px;
+    font-size: 1.5em;
+    color: rgba(255, 255, 255, 0.437);
+    white-space: wrap;
+    text-overflow: ellipsis;
+}
+
+
+
