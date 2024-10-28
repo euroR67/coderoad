@@ -15,7 +15,7 @@
 }
 
 body {
-  background-color: #191726;
+  background-color: #0E0D15;
   color: white;
 }
 
@@ -124,7 +124,7 @@ a {
 /* NAVBAR */
 .navbar {
   overflow: hidden;
-  background-color: #191726;
+  background-color: #0E0D15;
   padding: 10px;
   margin-bottom: 20px;
   border-bottom: 1px solid #434344;
@@ -135,7 +135,7 @@ a {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #191726;
+  background-color: #0E0D15;
 }
 
 .navbar ul li {
