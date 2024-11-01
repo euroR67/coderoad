@@ -144,6 +144,7 @@ input[type="form-checkbox"]:focus {
     outline: none;
 }
 
+
 .btn.form-submit {
     background-color: #ffffff;
     color: rgb(0, 0, 0);
