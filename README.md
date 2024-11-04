@@ -1,4 +1,4 @@
-<img src="assets/images/logo-coderoad.png" alt="Logo de Coderoad" width="100"/> 
+<img src="public/images/logo-coderoad.png" alt="Logo de Coderoad" width="100"/> 
 
 # Coderoad
 
